@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LED 售前工具中心</title>
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap">
+<style>
+  /* ===== 基础重置 ===== */
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg-deep: #0B0D11;
+    --bg-surface: #14171D;
+    --bg-card: #1A1E26;
+    --bg-card-hover: #1F242E;
+    --text-primary: #ECEEF2;
+    --text-secondary: #9AA0AC;
+    --text-muted: #5C6270;
+    --border-subtle: #262B35;
+    --border-hover: #353B48;
+    --accent-wire: #F59E0B;
+    --accent-wire-glow: rgba(245, 158, 11, 0.18);
+    --accent-size: #38BDF8;
+    --accent-size-glow: rgba(56, 189, 248, 0.18);
+    --accent-struct: #34D399;
+    --accent-struct-glow: rgba(52, 211, 153, 0.18);
+  }
+
+  html, body {
+    height: 100%;
+    font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg-deep);
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* ===== LED 像素点阵背景 ===== */
+  .pixel-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background-image:
+      radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size: 28px 28px;
+    background-position: 0 0;
+    pointer-events: none;
+  }
+
+  .pixel-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(56, 189, 248, 0.06), transparent),
+      radial-gradient(ellipse 50% 40% at 85% 100%, rgba(245, 158, 11, 0.04), transparent),
+      radial-gradient(ellipse 50% 40% at 15% 100%, rgba(52, 211, 153, 0.04), transparent);
+  }
+
+  /* ===== 主容器 ===== */
+  .wrapper {
+    position: relative;
+    z-index: 1;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 24px;
+  }
+
+  /* ===== 头部 ===== */
+  .header {
+    text-align: center;
+    margin-bottom: 52px;
+  }
+
+  .header .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+  }
+
+  .header .eyebrow .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent-size);
+    box-shadow: 0 0 8px var(--accent-size);
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.35; }
+  }
+
+  .header h1 {
+    font-size: clamp(26px, 4vw, 40px);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin-bottom: 14px;
+  }
+
+  .header h1 .highlight-wire { color: var(--accent-wire); }
+  .header h1 .highlight-size { color: var(--accent-size); }
+  .header h1 .highlight-struct { color: var(--accent-struct); }
+
+  .header p {
+    font-size: 15px;
+    color: var(--text-secondary);
+    font-weight: 300;
+    max-width: 520px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  /* ===== 卡片网格 ===== */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    width: 100%;
+    max-width: 1100px;
+  }
+
+  @media (max-width: 900px) {
+    .cards { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 600px) {
+    .cards { grid-template-columns: 1fr; }
+  }
+
+  /* ===== 工具卡片 ===== */
+  .tool-card {
+    position: relative;
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 16px;
+    padding: 32px 28px 28px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  .tool-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .tool-card.wire::before { background: linear-gradient(90deg, var(--accent-wire), transparent); }
+  .tool-card.size::before { background: linear-gradient(90deg, var(--accent-size), transparent); }
+  .tool-card.struct::before { background: linear-gradient(90deg, var(--accent-struct), transparent); }
+
+  .tool-card:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--border-hover);
+    transform: translateY(-4px);
+  }
+
+  .tool-card:hover::before { opacity: 1; }
+
+  .tool-card.wire:hover {
+    box-shadow: 0 12px 40px -12px var(--accent-wire-glow), 0 0 0 1px var(--border-hover);
+  }
+
+  .tool-card.size:hover {
+    box-shadow: 0 12px 40px -12px var(--accent-size-glow), 0 0 0 1px var(--border-hover);
+  }
+
+  .tool-card.struct:hover {
+    box-shadow: 0 12px 40px -12px var(--accent-struct-glow), 0 0 0 1px var(--border-hover);
+  }
+
+  /* 卡片图标 */
+  .card-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 22px;
+    transition: transform 0.3s ease;
+  }
+
+  .tool-card:hover .card-icon { transform: scale(1.08); }
+
+  .tool-card.wire .card-icon {
+    background: var(--accent-wire-glow);
+    border: 1px solid rgba(245, 158, 11, 0.25);
+  }
+
+  .tool-card.size .card-icon {
+    background: var(--accent-size-glow);
+    border: 1px solid rgba(56, 189, 248, 0.25);
+  }
+
+  .tool-card.struct .card-icon {
+    background: var(--accent-struct-glow);
+    border: 1px solid rgba(52, 211, 153, 0.25);
+  }
+
+  .card-icon svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .tool-card.wire .card-icon svg { stroke: var(--accent-wire); }
+  .tool-card.size .card-icon svg { stroke: var(--accent-size); }
+  .tool-card.struct .card-icon svg { stroke: var(--accent-struct); }
+
+  /* 卡片内容 */
+  .card-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    padding: 4px 9px;
+    border-radius: 4px;
+    margin-bottom: 12px;
+  }
+
+  .tool-card.wire .card-tag {
+    color: var(--accent-wire);
+    background: var(--accent-wire-glow);
+  }
+
+  .tool-card.size .card-tag {
+    color: var(--accent-size);
+    background: var(--accent-size-glow);
+  }
+
+  .tool-card.struct .card-tag {
+    color: var(--accent-struct);
+    background: var(--accent-struct-glow);
+  }
+
+  .tool-card h2 {
+    font-size: 19px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+
+  .tool-card .desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    font-weight: 300;
+    margin-bottom: 22px;
+  }
+
+  /* 特性列表 */
+  .features {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    margin-bottom: 24px;
+  }
+
+  .features li {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-weight: 400;
+  }
+
+  .features li .check {
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .tool-card.wire .features li .check { background: var(--accent-wire-glow); }
+  .tool-card.size .features li .check { background: var(--accent-size-glow); }
+  .tool-card.struct .features li .check { background: var(--accent-struct-glow); }
+
+  .features li .check svg {
+    width: 9px;
+    height: 9px;
+  }
+
+  .tool-card.wire .features li .check svg { stroke: var(--accent-wire); }
+  .tool-card.size .features li .check svg { stroke: var(--accent-size); }
+  .tool-card.struct .features li .check svg { stroke: var(--accent-struct); }
+
+  /* 进入按钮 */
+  .enter-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 9px 18px;
+    border-radius: 8px;
+    transition: all 0.25s ease;
+  }
+
+  .tool-card.wire .enter-btn {
+    color: var(--accent-wire);
+    background: var(--accent-wire-glow);
+  }
+
+  .tool-card.size .enter-btn {
+    color: var(--accent-size);
+    background: var(--accent-size-glow);
+  }
+
+  .tool-card.struct .enter-btn {
+    color: var(--accent-struct);
+    background: var(--accent-struct-glow);
+  }
+
+  .tool-card:hover .enter-btn {
+    gap: 11px;
+  }
+
+  .enter-btn svg {
+    width: 15px;
+    height: 15px;
+    transition: transform 0.25s ease;
+  }
+
+  .tool-card:hover .enter-btn svg {
+    transform: translateX(3px);
+  }
+
+  /* ===== 底部信息 ===== */
+  .footer {
+    margin-top: 48px;
+    text-align: center;
+  }
+
+  .footer .divider {
+    width: 40px;
+    height: 1px;
+    background: var(--border-subtle);
+    margin: 0 auto 18px;
+  }
+
+  .footer p {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 300;
+    letter-spacing: 0.02em;
+  }
+
+  /* ===== 键盘可访问性 ===== */
+  .tool-card:focus-visible {
+    outline: 2px solid var(--accent-size);
+    outline-offset: 3px;
+  }
+
+  /* ===== 减少动效 ===== */
+  @media (prefers-reduced-motion: reduce) {
+    .tool-card, .card-icon, .enter-btn, .enter-btn svg, .header .eyebrow .dot {
+      transition: none;
+      animation: none;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="pixel-bg"></div>
+
+<div class="wrapper">
+
+  <!-- 头部 -->
+  <header class="header">
+    <div class="eyebrow">
+      <span class="dot"></span>
+      <span>LED Display Pre-Sales Toolkit</span>
+    </div>
+    <h1>售前工具<span class="highlight-wire">中心</span></h1>
+    <p>线材速查 · 尺寸速算 · 结构配件速算，一个入口直达，方案输出更高效</p>
+  </header>
+
+  <!-- 工具卡片 -->
+  <div class="cards">
+
+    <!-- 标准线材速查 -->
+    <a class="tool-card wire" href="https://abspresales.github.io/wire-cable/" target="_blank" rel="noopener noreferrer" aria-label="打开标准线材速查表">
+      <div class="card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 4v6a4 4 0 0 0 4 4h8a4 4 0 0 0 4-4V4"/>
+          <path d="M4 20v-2a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2"/>
+          <circle cx="8" cy="4" r="1.5"/>
+          <circle cx="16" cy="4" r="1.5"/>
+          <circle cx="8" cy="20" r="1.5"/>
+          <circle cx="16" cy="20" r="1.5"/>
+        </svg>
+      </div>
+      <span class="card-tag">CABLE REFERENCE</span>
+      <h2>标准线材速查</h2>
+      <p class="desc">按产品系列、线材类型、长度、标准多维度筛选，快速定位 SAP 料号与物料描述。</p>
+      <ul class="features">
+        <li>
+          <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          多系列线材数据覆盖
+        </li>
+        <li>
+          <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          UL / VDE / 3C / PSE 多标准
+        </li>
+        <li>
+          <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          连箱线 / 主电源线 / 主网线
+        </li>
+      </ul>
+      <span class="enter-btn">
+        打开速查表
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </span>
+    </a>
+
+    <!-- 预估尺寸速算 -->
+    <a class="tool-card size" href="https://abspresales.github.io/estimated-dimensions/" target="_blank" rel="noopener noreferrer" aria-label="打开预估尺寸速算表">
+      <div class="card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2"/>
+          <path d="M3 9h18"/>
+          <path d="M9 3v18"/>
+          <path d="M15 3v18"/>
+          <path d="M3 15h18"/>
+        </svg>
+      </div>
+      <span class="card-tag">DIMENSION CALCULATOR</span>
+      <h2>预估尺寸速算</h2>
+      <p class="desc">输入打包件数，自动汇总重量、体积、箱体总数，估算货柜需求，打包方案一目了然。</p>
+      <ul class="features">
+        <li>
+          <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          多产品系列打包方案
+        </li>
+        <li>
+          <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          航空箱 / 木箱 / 运输架
+        </li>
+        <li>
+          <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          20GP / 40GP / 40HQ 估算
+        </li>
+      </ul>
+      <span class="enter-btn">
+        打开速算表
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </span>
+    </a>
+
+    <!-- 结构配件速算 -->
+    <a class="tool-card struct" href="https://abspresales.github.io/structural-sfittings/" target="_blank" rel="noopener noreferrer" aria-label="打开结构配件速算表">
+      <div class="card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+          <path d="M2 17l10 5 10-5"/>
+          <path d="M2 12l10 5 10-5"/>
+        </svg>
+      </div>
+      <span class="card-tag">STRUCTURAL FITTINGS</span>
+      <h2>结构配件速算</h2>
+      <p class="desc">吊挂、安装、支撑结构配件快速查询与用量估算，配套方案输出更完整。</p>
+      <ul class="features">
+        <li>
+          <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          吊挂 / 安装 / 支撑配件
+        </li>
+        <li>
+          <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          按产品系列匹配配件
+        </li>
+        <li>
+          <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          用量自动估算
+        </li>
+      </ul>
+      <span class="enter-btn">
+        打开速算表
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </span>
+    </a>
+
+  </div>
+
+  <!-- 底部 -->
+  <footer class="footer">
+    <div class="divider"></div>
+    <p>仅供参考，具体以下单实际为准</p>
+  </footer>
+
+</div>
+
+</body>
+</html>

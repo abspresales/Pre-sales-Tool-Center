@@ -125,12 +125,17 @@
   .header h1 .highlight-nonstd { color: var(--accent-nonstd); }
 
   .header p {
-    font-size: 15px;
+    font-size: 13px;
     color: var(--text-secondary);
     font-weight: 300;
-    max-width: 600px;
-    margin: 0 auto;
+    white-space: nowrap;
     line-height: 1.7;
+  }
+  @media (max-width: 760px) {
+    .header p { font-size: 11px; }
+  }
+  @media (max-width: 520px) {
+    .header p { font-size: 10px; }
   }
 
   /* ===== 卡片滚动区域 ===== */

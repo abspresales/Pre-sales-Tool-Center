@@ -29,6 +29,8 @@
     --accent-acc-glow: rgba(167, 139, 250, 0.18);
     --accent-nonstd: #F472B6;
     --accent-nonstd-glow: rgba(244, 114, 182, 0.18);
+    --accent-wiring: #2DD4BF;
+    --accent-wiring-glow: rgba(45, 212, 191, 0.18);
     --cards-per-view: 4;
     --card-gap: 16px;
   }
@@ -63,7 +65,8 @@
       radial-gradient(ellipse 35% 30% at 90% 100%, rgba(245, 158, 11, 0.04), transparent),
       radial-gradient(ellipse 35% 30% at 10% 100%, rgba(52, 211, 153, 0.04), transparent),
       radial-gradient(ellipse 35% 30% at 50% 110%, rgba(167, 139, 250, 0.04), transparent),
-      radial-gradient(ellipse 35% 30% at 70% 110%, rgba(244, 114, 182, 0.04), transparent);
+      radial-gradient(ellipse 35% 30% at 70% 110%, rgba(244, 114, 182, 0.04), transparent),
+      radial-gradient(ellipse 35% 30% at 30% 110%, rgba(45, 212, 191, 0.04), transparent);
   }
 
   /* ===== 主容器 ===== */
@@ -123,6 +126,7 @@
   .header h1 .highlight-struct { color: var(--accent-struct); }
   .header h1 .highlight-acc { color: var(--accent-acc); }
   .header h1 .highlight-nonstd { color: var(--accent-nonstd); }
+  .header h1 .highlight-wiring { color: var(--accent-wiring); }
 
   .header p {
     font-size: 13px;
@@ -277,6 +281,7 @@
   .tool-card.struct::before { background: linear-gradient(90deg, var(--accent-struct), transparent); }
   .tool-card.acc::before { background: linear-gradient(90deg, var(--accent-acc), transparent); }
   .tool-card.nonstd::before { background: linear-gradient(90deg, var(--accent-nonstd), transparent); }
+  .tool-card.wiring::before { background: linear-gradient(90deg, var(--accent-wiring), transparent); }
 
   .tool-card:hover {
     background: var(--bg-card-hover);
@@ -304,6 +309,9 @@
 
   .tool-card.nonstd:hover {
     box-shadow: 0 12px 40px -12px var(--accent-nonstd-glow), 0 0 0 1px var(--border-hover);
+  }
+  .tool-card.wiring:hover {
+    box-shadow: 0 12px 40px -12px var(--accent-wiring-glow), 0 0 0 1px var(--border-hover);
   }
 
   /* 卡片图标 */
@@ -344,6 +352,10 @@
     background: var(--accent-nonstd-glow);
     border: 1px solid rgba(244, 114, 182, 0.25);
   }
+  .tool-card.wiring .card-icon {
+    background: var(--accent-wiring-glow);
+    border: 1px solid rgba(45, 212, 191, 0.25);
+  }
 
   .card-icon svg {
     width: 22px;
@@ -355,6 +367,7 @@
   .tool-card.struct .card-icon svg { stroke: var(--accent-struct); }
   .tool-card.acc .card-icon svg { stroke: var(--accent-acc); }
   .tool-card.nonstd .card-icon svg { stroke: var(--accent-nonstd); }
+  .tool-card.wiring .card-icon svg { stroke: var(--accent-wiring); }
 
   /* 卡片内容 */
   .card-tag {
@@ -390,6 +403,10 @@
   .tool-card.nonstd .card-tag {
     color: var(--accent-nonstd);
     background: var(--accent-nonstd-glow);
+  }
+  .tool-card.wiring .card-tag {
+    color: var(--accent-wiring);
+    background: var(--accent-wiring-glow);
   }
 
   .tool-card h2 {
@@ -440,6 +457,7 @@
   .tool-card.struct .features li .check { background: var(--accent-struct-glow); }
   .tool-card.acc .features li .check { background: var(--accent-acc-glow); }
   .tool-card.nonstd .features li .check { background: var(--accent-nonstd-glow); }
+  .tool-card.wiring .features li .check { background: var(--accent-wiring-glow); }
 
   .features li .check svg {
     width: 8px;
@@ -451,6 +469,7 @@
   .tool-card.struct .features li .check svg { stroke: var(--accent-struct); }
   .tool-card.acc .features li .check svg { stroke: var(--accent-acc); }
   .tool-card.nonstd .features li .check svg { stroke: var(--accent-nonstd); }
+  .tool-card.wiring .features li .check svg { stroke: var(--accent-wiring); }
 
   /* 进入按钮 */
   .enter-btn {
@@ -487,6 +506,10 @@
   .tool-card.nonstd .enter-btn {
     color: var(--accent-nonstd);
     background: var(--accent-nonstd-glow);
+  }
+  .tool-card.wiring .enter-btn {
+    color: var(--accent-wiring);
+    background: var(--accent-wiring-glow);
   }
 
   .tool-card:hover .enter-btn {
@@ -557,7 +580,7 @@
       <span>LED Display Pre-Sales Toolkit</span>
     </div>
     <h1>售前工具<span class="highlight-wire">中心</span></h1>
-    <p>标准线材 · 预估尺寸 · 结构配件 · 常用配件 · 非标方案，一个入口直达，方案输出更高效</p>
+    <p>标准线材 · 预估尺寸 · 结构配件 · 常用配件 · 非标方案 · 布线图纸，一个入口直达，方案输出更高效</p>
   </header>
 
   <!-- 卡片滚动区域 -->
@@ -725,6 +748,43 @@
         </ul>
         <span class="enter-btn">
           打开统计表
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </span>
+      </a>
+
+      <!-- 布线图纸生成器 -->
+      <a class="tool-card wiring" href="https://abspresales.github.io/wiring-diagram" target="_blank" rel="noopener noreferrer" aria-label="打开布线图纸生成器">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7" rx="1"/>
+            <rect x="14" y="3" width="7" height="7" rx="1"/>
+            <rect x="3" y="14" width="7" height="7" rx="1"/>
+            <rect x="14" y="14" width="7" height="7" rx="1"/>
+            <path d="M10 6.5h4"/>
+            <path d="M6.5 10v4"/>
+            <path d="M17.5 10v4"/>
+            <path d="M10 17.5h4"/>
+          </svg>
+        </div>
+        <span class="card-tag">WIRING DIAGRAM</span>
+        <h2>布线图纸生成器</h2>
+        <p class="desc">自动生成网线级联与电源线分布布线图，方案输出更直观高效。</p>
+        <ul class="features">
+          <li>
+            <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+            箱体阵列批量创建
+          </li>
+          <li>
+            <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+            网线级联图自动生成
+          </li>
+          <li>
+            <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+            电源线分布图
+          </li>
+        </ul>
+        <span class="enter-btn">
+          打开生成器
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
         </span>
       </a>

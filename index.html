@@ -10,27 +10,27 @@
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
   :root {
-    --bg-deep: #0B0D11;
-    --bg-surface: #14171D;
-    --bg-card: #1A1E26;
-    --bg-card-hover: #1F242E;
-    --text-primary: #ECEEF2;
-    --text-secondary: #9AA0AC;
-    --text-muted: #5C6270;
-    --border-subtle: #262B35;
-    --border-hover: #353B48;
+    --bg-deep: #0F172A;
+    --bg-surface: #1E293B;
+    --bg-card: #1E293B;
+    --bg-card-hover: #273449;
+    --text-primary: #F1F5F9;
+    --text-secondary: #94A3B8;
+    --text-muted: #64748B;
+    --border-subtle: #334155;
+    --border-hover: #475569;
     --accent-wire: #F59E0B;
-    --accent-wire-glow: rgba(245, 158, 11, 0.18);
+    --accent-wire-glow: rgba(245, 158, 11, 0.15);
     --accent-size: #38BDF8;
-    --accent-size-glow: rgba(56, 189, 248, 0.18);
+    --accent-size-glow: rgba(56, 189, 248, 0.15);
     --accent-struct: #34D399;
-    --accent-struct-glow: rgba(52, 211, 153, 0.18);
+    --accent-struct-glow: rgba(52, 211, 153, 0.15);
     --accent-acc: #A78BFA;
-    --accent-acc-glow: rgba(167, 139, 250, 0.18);
+    --accent-acc-glow: rgba(167, 139, 250, 0.15);
     --accent-nonstd: #F472B6;
-    --accent-nonstd-glow: rgba(244, 114, 182, 0.18);
+    --accent-nonstd-glow: rgba(244, 114, 182, 0.15);
     --accent-wiring: #2DD4BF;
-    --accent-wiring-glow: rgba(45, 212, 191, 0.18);
+    --accent-wiring-glow: rgba(45, 212, 191, 0.15);
     --cards-per-view: 4;
     --card-gap: 16px;
   }
@@ -73,18 +73,18 @@
   .wrapper {
     position: relative;
     z-index: 1;
-    min-height: 100%;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 48px 24px;
+    padding: 40px 24px;
   }
 
   /* ===== 头部 ===== */
   .header {
     text-align: center;
-    margin-bottom: 44px;
+    margin-bottom: 40px;
   }
 
   .header .eyebrow {
@@ -114,7 +114,7 @@
   }
 
   .header h1 {
-    font-size: clamp(26px, 4vw, 40px);
+    font-size: clamp(28px, 4vw, 40px);
     font-weight: 900;
     letter-spacing: -0.02em;
     line-height: 1.15;
@@ -188,7 +188,7 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: rgba(26, 30, 38, 0.9);
+    background: rgba(30, 41, 59, 0.95);
     border: 1px solid var(--border-subtle);
     color: var(--text-secondary);
     cursor: pointer;
@@ -229,25 +229,43 @@
   .dots {
     display: flex;
     justify-content: center;
+    align-items: center;
     gap: 8px;
-    margin-top: 20px;
+    margin-top: 24px;
   }
-
   .dot {
-    width: 8px;
-    height: 8px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
-    background: var(--border-subtle);
-    border: none;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 500;
+    font-family: inherit;
     cursor: pointer;
-    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.25s ease;
     padding: 0;
   }
-
+  .dot:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--border-hover);
+    color: var(--text-primary);
+  }
   .dot.active {
-    background: var(--accent-size);
-    width: 24px;
-    border-radius: 4px;
+    background: var(--accent-size-glow);
+    border-color: rgba(56, 189, 248, 0.3);
+    color: var(--accent-size);
+    font-weight: 700;
+  }
+  .page-info {
+    margin-left: 8px;
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 300;
   }
 
   /* ===== 工具卡片 ===== */
@@ -259,7 +277,7 @@
     background: var(--bg-card);
     border: 1px solid var(--border-subtle);
     border-radius: 16px;
-    padding: 28px 24px 24px;
+    padding: 28px 24px 26px;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     overflow: hidden;
     cursor: pointer;
@@ -316,13 +334,13 @@
 
   /* 卡片图标 */
   .card-icon {
-    width: 44px;
-    height: 44px;
+    width: 48px;
+    height: 48px;
     border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 18px;
+    margin-bottom: 20px;
     transition: transform 0.3s ease;
   }
 
@@ -358,8 +376,8 @@
   }
 
   .card-icon svg {
-    width: 22px;
-    height: 22px;
+    width: 24px;
+    height: 24px;
   }
 
   .tool-card.wire .card-icon svg { stroke: var(--accent-wire); }
@@ -377,7 +395,7 @@
     letter-spacing: 0.08em;
     padding: 4px 8px;
     border-radius: 4px;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
   }
 
   .tool-card.wire .card-tag {
@@ -410,17 +428,17 @@
   }
 
   .tool-card h2 {
-    font-size: 17px;
+    font-size: 18px;
     font-weight: 700;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     letter-spacing: -0.01em;
   }
 
   .tool-card .desc {
-    font-size: 12px;
+    font-size: 13px;
     color: var(--text-secondary);
     line-height: 1.7;
-    font-weight: 300;
+    font-weight: 400;
     margin-bottom: 18px;
   }
 
@@ -429,7 +447,7 @@
     list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 7px;
     margin-bottom: 20px;
   }
 
@@ -437,7 +455,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 11px;
+    font-size: 12px;
     color: var(--text-secondary);
     font-weight: 400;
   }
@@ -475,10 +493,10 @@
   .enter-btn {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    font-size: 12px;
+    gap: 7px;
+    font-size: 13px;
     font-weight: 500;
-    padding: 8px 16px;
+    padding: 9px 18px;
     border-radius: 8px;
     transition: all 0.25s ease;
   }
@@ -528,7 +546,7 @@
 
   /* ===== 底部信息 ===== */
   .footer {
-    margin-top: 40px;
+    margin-top: 32px;
     text-align: center;
   }
 
@@ -832,10 +850,15 @@
       for (let i = 0; i < totalPages; i++) {
         const dot = document.createElement('button');
         dot.className = 'dot' + (i === currentPage ? ' active' : '');
+        dot.textContent = (i + 1);
         dot.setAttribute('aria-label', '第' + (i + 1) + '页');
         dot.addEventListener('click', function() { goToPage(i); });
         dotsContainer.appendChild(dot);
       }
+      const info = document.createElement('span');
+      info.className = 'page-info';
+      info.textContent = '共 ' + totalPages + ' 页';
+      dotsContainer.appendChild(info);
     }
 
     function updateDots() {

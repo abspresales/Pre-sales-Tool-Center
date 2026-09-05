@@ -27,6 +27,8 @@
     --accent-struct-glow: rgba(52, 211, 153, 0.18);
     --accent-acc: #A78BFA;
     --accent-acc-glow: rgba(167, 139, 250, 0.18);
+    --accent-nonstd: #F472B6;
+    --accent-nonstd-glow: rgba(244, 114, 182, 0.18);
   }
 
   html, body {
@@ -56,9 +58,10 @@
     inset: 0;
     background:
       radial-gradient(ellipse 80% 50% at 50% -10%, rgba(56, 189, 248, 0.06), transparent),
-      radial-gradient(ellipse 40% 35% at 88% 100%, rgba(245, 158, 11, 0.04), transparent),
-      radial-gradient(ellipse 40% 35% at 12% 100%, rgba(52, 211, 153, 0.04), transparent),
-      radial-gradient(ellipse 40% 35% at 50% 110%, rgba(167, 139, 250, 0.04), transparent);
+      radial-gradient(ellipse 35% 30% at 90% 100%, rgba(245, 158, 11, 0.04), transparent),
+      radial-gradient(ellipse 35% 30% at 10% 100%, rgba(52, 211, 153, 0.04), transparent),
+      radial-gradient(ellipse 35% 30% at 50% 110%, rgba(167, 139, 250, 0.04), transparent),
+      radial-gradient(ellipse 35% 30% at 70% 110%, rgba(244, 114, 182, 0.04), transparent);
   }
 
   /* ===== 主容器 ===== */
@@ -117,12 +120,13 @@
   .header h1 .highlight-size { color: var(--accent-size); }
   .header h1 .highlight-struct { color: var(--accent-struct); }
   .header h1 .highlight-acc { color: var(--accent-acc); }
+  .header h1 .highlight-nonstd { color: var(--accent-nonstd); }
 
   .header p {
     font-size: 15px;
     color: var(--text-secondary);
     font-weight: 300;
-    max-width: 560px;
+    max-width: 600px;
     margin: 0 auto;
     line-height: 1.7;
   }
@@ -130,17 +134,21 @@
   /* ===== 卡片网格 ===== */
   .cards {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 18px;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
     width: 100%;
-    max-width: 1280px;
+    max-width: 1400px;
   }
 
-  @media (max-width: 1024px) {
+  @media (max-width: 1200px) {
+    .cards { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  @media (max-width: 760px) {
     .cards { grid-template-columns: repeat(2, 1fr); }
   }
 
-  @media (max-width: 560px) {
+  @media (max-width: 520px) {
     .cards { grid-template-columns: 1fr; }
   }
 
@@ -153,7 +161,7 @@
     background: var(--bg-card);
     border: 1px solid var(--border-subtle);
     border-radius: 16px;
-    padding: 30px 26px 26px;
+    padding: 28px 24px 24px;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     overflow: hidden;
     cursor: pointer;
@@ -174,6 +182,7 @@
   .tool-card.size::before { background: linear-gradient(90deg, var(--accent-size), transparent); }
   .tool-card.struct::before { background: linear-gradient(90deg, var(--accent-struct), transparent); }
   .tool-card.acc::before { background: linear-gradient(90deg, var(--accent-acc), transparent); }
+  .tool-card.nonstd::before { background: linear-gradient(90deg, var(--accent-nonstd), transparent); }
 
   .tool-card:hover {
     background: var(--bg-card-hover);
@@ -199,15 +208,19 @@
     box-shadow: 0 12px 40px -12px var(--accent-acc-glow), 0 0 0 1px var(--border-hover);
   }
 
+  .tool-card.nonstd:hover {
+    box-shadow: 0 12px 40px -12px var(--accent-nonstd-glow), 0 0 0 1px var(--border-hover);
+  }
+
   /* 卡片图标 */
   .card-icon {
-    width: 46px;
-    height: 46px;
+    width: 44px;
+    height: 44px;
     border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 20px;
+    margin-bottom: 18px;
     transition: transform 0.3s ease;
   }
 
@@ -233,25 +246,31 @@
     border: 1px solid rgba(167, 139, 250, 0.25);
   }
 
+  .tool-card.nonstd .card-icon {
+    background: var(--accent-nonstd-glow);
+    border: 1px solid rgba(244, 114, 182, 0.25);
+  }
+
   .card-icon svg {
-    width: 23px;
-    height: 23px;
+    width: 22px;
+    height: 22px;
   }
 
   .tool-card.wire .card-icon svg { stroke: var(--accent-wire); }
   .tool-card.size .card-icon svg { stroke: var(--accent-size); }
   .tool-card.struct .card-icon svg { stroke: var(--accent-struct); }
   .tool-card.acc .card-icon svg { stroke: var(--accent-acc); }
+  .tool-card.nonstd .card-icon svg { stroke: var(--accent-nonstd); }
 
   /* 卡片内容 */
   .card-tag {
     display: inline-block;
-    font-size: 10px;
+    font-size: 9px;
     font-weight: 500;
     letter-spacing: 0.08em;
-    padding: 4px 9px;
+    padding: 4px 8px;
     border-radius: 4px;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
   }
 
   .tool-card.wire .card-tag {
@@ -274,19 +293,24 @@
     background: var(--accent-acc-glow);
   }
 
+  .tool-card.nonstd .card-tag {
+    color: var(--accent-nonstd);
+    background: var(--accent-nonstd-glow);
+  }
+
   .tool-card h2 {
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 700;
     margin-bottom: 8px;
     letter-spacing: -0.01em;
   }
 
   .tool-card .desc {
-    font-size: 13px;
+    font-size: 12px;
     color: var(--text-secondary);
     line-height: 1.7;
     font-weight: 300;
-    margin-bottom: 20px;
+    margin-bottom: 18px;
   }
 
   /* 特性列表 */
@@ -294,22 +318,22 @@
     list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 7px;
-    margin-bottom: 22px;
+    gap: 6px;
+    margin-bottom: 20px;
   }
 
   .features li {
     display: flex;
     align-items: center;
-    gap: 9px;
-    font-size: 12px;
+    gap: 8px;
+    font-size: 11px;
     color: var(--text-secondary);
     font-weight: 400;
   }
 
   .features li .check {
-    width: 15px;
-    height: 15px;
+    width: 14px;
+    height: 14px;
     flex-shrink: 0;
     border-radius: 50%;
     display: flex;
@@ -321,25 +345,27 @@
   .tool-card.size .features li .check { background: var(--accent-size-glow); }
   .tool-card.struct .features li .check { background: var(--accent-struct-glow); }
   .tool-card.acc .features li .check { background: var(--accent-acc-glow); }
+  .tool-card.nonstd .features li .check { background: var(--accent-nonstd-glow); }
 
   .features li .check svg {
-    width: 9px;
-    height: 9px;
+    width: 8px;
+    height: 8px;
   }
 
   .tool-card.wire .features li .check svg { stroke: var(--accent-wire); }
   .tool-card.size .features li .check svg { stroke: var(--accent-size); }
   .tool-card.struct .features li .check svg { stroke: var(--accent-struct); }
   .tool-card.acc .features li .check svg { stroke: var(--accent-acc); }
+  .tool-card.nonstd .features li .check svg { stroke: var(--accent-nonstd); }
 
   /* 进入按钮 */
   .enter-btn {
     display: inline-flex;
     align-items: center;
-    gap: 7px;
-    font-size: 13px;
+    gap: 6px;
+    font-size: 12px;
     font-weight: 500;
-    padding: 9px 18px;
+    padding: 8px 16px;
     border-radius: 8px;
     transition: all 0.25s ease;
   }
@@ -364,13 +390,18 @@
     background: var(--accent-acc-glow);
   }
 
+  .tool-card.nonstd .enter-btn {
+    color: var(--accent-nonstd);
+    background: var(--accent-nonstd-glow);
+  }
+
   .tool-card:hover .enter-btn {
-    gap: 11px;
+    gap: 10px;
   }
 
   .enter-btn svg {
-    width: 15px;
-    height: 15px;
+    width: 14px;
+    height: 14px;
     transition: transform 0.25s ease;
   }
 
@@ -426,7 +457,7 @@
       <span>LED Display Pre-Sales Toolkit</span>
     </div>
     <h1>售前工具<span class="highlight-wire">中心</span></h1>
-    <p>标准线材速查 · 预估尺寸速算 · 结构配件速算 · 常用配件速查，一个入口直达，方案输出更高效</p>
+    <p>标准线材速查 · 预估尺寸速算 · 结构配件速算 · 常用配件速查 · 非标方案，一个入口直达，方案输出更高效</p>
   </header>
 
   <!-- 工具卡片 -->
@@ -559,6 +590,36 @@
       </ul>
       <span class="enter-btn">
         打开速查表
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </span>
+    </a>
+
+    <!-- 非标方案 -->
+    <a class="tool-card nonstd" href="https://abspresales.github.io/Non-standard-Solution/" target="_blank" rel="noopener noreferrer" aria-label="打开非标方案">
+      <div class="card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+        </svg>
+      </div>
+      <span class="card-tag">NON-STANDARD SOLUTION</span>
+      <h2>非标方案</h2>
+      <p class="desc">非标定制方案参考，特殊场景需求快速匹配，助力方案输出。</p>
+      <ul class="features">
+        <li>
+          <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          非标产品方案参考
+        </li>
+        <li>
+          <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          特殊场景定制建议
+        </li>
+        <li>
+          <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          快速匹配对应方案
+        </li>
+      </ul>
+      <span class="enter-btn">
+        打开方案
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
       </span>
     </a>

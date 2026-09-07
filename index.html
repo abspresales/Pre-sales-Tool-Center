@@ -26,7 +26,7 @@
     --accent-acc: #A78BFA;
     --accent-nonstd: #F472B6;
     --accent-wiring: #2DD4BF;
-    --sidebar-width: 240px;
+    --sidebar-width: 200px;
   }
 
   html, body {
@@ -58,8 +58,59 @@
   }
 
   .sidebar-header {
-    padding: 24px 20px 20px;
+    height: 52px;
+    padding: 0 16px;
     border-bottom: 1px solid var(--border-subtle);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background: linear-gradient(180deg, rgba(56, 189, 248, 0.04), transparent);
+  }
+
+  .sidebar-title {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 6px 14px 6px 8px;
+    border-radius: 10px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+  }
+
+  .sidebar-title .st-icon {
+    width: 26px;
+    height: 26px;
+    border-radius: 7px;
+    background: linear-gradient(135deg, var(--accent-size), var(--accent-wiring));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .sidebar-title .st-icon svg {
+    width: 14px;
+    height: 14px;
+    stroke: #fff;
+  }
+
+  .sidebar-title h1 {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    line-height: 1;
+    color: var(--text-primary);
+  }
+
+  .sidebar-title .st-badge {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--accent-size);
+    background: rgba(56, 189, 248, 0.1);
+    padding: 2px 6px;
+    border-radius: 5px;
+    margin-left: 2px;
   }
 
   .sidebar-header .logo-dot {
@@ -89,39 +140,22 @@
     align-items: center;
   }
 
-  .sidebar-header h1 {
-    font-size: 20px;
-    font-weight: 900;
-    letter-spacing: -0.01em;
-    line-height: 1.3;
-  }
-
-  .sidebar-header h1 .accent { color: var(--accent-size); }
-
-  .sidebar-header .subtitle {
-    font-size: 11px;
-    color: var(--text-muted);
-    margin-top: 8px;
-    line-height: 1.5;
-    font-weight: 300;
-  }
-
   /* 导航列表 */
   .nav-list {
     list-style: none;
-    padding: 12px 12px;
+    padding: 10px 10px;
     flex: 1;
   }
 
   .nav-item {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 12px 14px;
+    gap: 10px;
+    padding: 10px 12px;
     border-radius: 10px;
     cursor: pointer;
     transition: all 0.2s ease;
-    margin-bottom: 4px;
+    margin-bottom: 3px;
     border: 1px solid transparent;
     position: relative;
   }
@@ -149,9 +183,9 @@
   }
 
   .nav-icon {
-    width: 36px;
-    height: 36px;
-    border-radius: 9px;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -159,8 +193,8 @@
   }
 
   .nav-icon svg {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
   }
 
   .nav-item.wire .nav-icon { background: rgba(245, 158, 11, 0.12); }
@@ -182,7 +216,7 @@
   }
 
   .nav-name {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
     color: var(--text-primary);
     margin-bottom: 2px;
@@ -192,7 +226,7 @@
   }
 
   .nav-desc {
-    font-size: 11px;
+    font-size: 10px;
     color: var(--text-muted);
     font-weight: 300;
     white-space: nowrap;
@@ -222,7 +256,8 @@
   }
 
   .main-header {
-    padding: 14px 24px;
+    height: 48px;
+    padding: 0 24px;
     border-bottom: 1px solid var(--border-subtle);
     display: flex;
     align-items: center;
@@ -232,11 +267,21 @@
   }
 
   .main-title {
-    font-size: 15px;
-    font-weight: 700;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    font-family: inherit;
     display: flex;
     align-items: center;
     gap: 10px;
+    line-height: 1;
+  }
+
+  .main-title #currentToolName {
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    letter-spacing: inherit;
   }
 
   .main-title .status-dot {
@@ -282,12 +327,168 @@
     stroke: currentColor;
   }
 
-  /* iframe 容器 */
-  .iframe-container {
+  /* 内容区域 */
+  .content-area {
     flex: 1;
     position: relative;
+    overflow: hidden;
+  }
+
+  /* 欢迎首页 */
+  .welcome-page {
+    position: absolute;
+    inset: 0;
+    background: var(--bg-deep);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    overflow-y: auto;
+    z-index: 5;
+  }
+
+  .welcome-page.hidden {
+    display: none;
+  }
+
+  .welcome-hero {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .welcome-hero .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 16px;
+    border-radius: 20px;
+    background: rgba(56, 189, 248, 0.1);
+    border: 1px solid rgba(56, 189, 248, 0.2);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--accent-size);
+    margin-bottom: 20px;
+    letter-spacing: 0.05em;
+  }
+
+  .welcome-hero .badge .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent-size);
+    box-shadow: 0 0 8px var(--accent-size);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  .welcome-hero h2 {
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    margin-bottom: 14px;
+  }
+
+  .welcome-hero h2 .gradient {
+    background: linear-gradient(135deg, var(--accent-size), var(--accent-wiring));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .welcome-hero p {
+    font-size: 15px;
+    color: var(--text-secondary);
+    font-weight: 300;
+    line-height: 1.7;
+    max-width: 520px;
+    margin: 0 auto;
+  }
+
+  .welcome-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    max-width: 720px;
+    width: 100%;
+  }
+
+  .welcome-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 14px;
+    padding: 22px 20px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-align: left;
+  }
+
+  .welcome-card:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--border-hover);
+    transform: translateY(-2px);
+  }
+
+  .welcome-card .wc-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+  }
+
+  .welcome-card .wc-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .welcome-card h3 {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .welcome-card p {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 300;
+    line-height: 1.5;
+  }
+
+  .welcome-card.wire .wc-icon { background: rgba(245, 158, 11, 0.12); }
+  .welcome-card.wire .wc-icon svg { stroke: var(--accent-wire); }
+  .welcome-card.size .wc-icon { background: rgba(56, 189, 248, 0.12); }
+  .welcome-card.size .wc-icon svg { stroke: var(--accent-size); }
+  .welcome-card.struct .wc-icon { background: rgba(52, 211, 153, 0.12); }
+  .welcome-card.struct .wc-icon svg { stroke: var(--accent-struct); }
+  .welcome-card.acc .wc-icon { background: rgba(167, 139, 250, 0.12); }
+  .welcome-card.acc .wc-icon svg { stroke: var(--accent-acc); }
+  .welcome-card.nonstd .wc-icon { background: rgba(244, 114, 182, 0.12); }
+  .welcome-card.nonstd .wc-icon svg { stroke: var(--accent-nonstd); }
+  .welcome-card.wiring .wc-icon { background: rgba(45, 212, 191, 0.12); }
+  .welcome-card.wiring .wc-icon svg { stroke: var(--accent-wiring); }
+
+  .welcome-footer {
+    margin-top: 36px;
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 300;
+    text-align: center;
+    line-height: 1.8;
+  }
+
+  /* iframe 容器 */
+  .iframe-container {
+    position: absolute;
+    inset: 0;
     background: #fff;
     overflow: hidden;
+  }
+
+  .iframe-container.hidden {
+    display: none;
   }
 
   .iframe-container iframe {
@@ -350,7 +551,8 @@
     }
 
     .sidebar-header {
-      padding: 16px 16px 14px;
+      height: 48px;
+      padding: 0 16px;
     }
 
     .nav-list {
@@ -397,11 +599,29 @@
     }
 
     .main-header {
-      padding: 10px 16px;
+      height: 48px;
+      padding: 0 16px;
     }
 
     .main-title {
       font-size: 13px;
+    }
+
+    .welcome-page {
+      padding: 24px 16px;
+    }
+
+    .welcome-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .welcome-card {
+      padding: 16px 14px;
+    }
+
+    .welcome-hero h2 {
+      font-size: 24px;
     }
   }
 
@@ -422,13 +642,24 @@
   <!-- ===== 左侧边栏 ===== -->
   <aside class="sidebar">
     <div class="sidebar-header">
-      <div class="brand"><span class="logo-dot"></span>Pre-Sales Toolkit</div>
-      <h1>售前工具<span class="accent">中心</span></h1>
-      <p class="subtitle">六大工具一站式访问，点击左侧切换</p>
+      <div class="sidebar-title">
+        <div class="st-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="8" y1="6" x2="21" y2="6"/>
+            <line x1="8" y1="12" x2="21" y2="12"/>
+            <line x1="8" y1="18" x2="21" y2="18"/>
+            <line x1="3" y1="6" x2="3.01" y2="6"/>
+            <line x1="3" y1="12" x2="3.01" y2="12"/>
+            <line x1="3" y1="18" x2="3.01" y2="18"/>
+          </svg>
+        </div>
+        <h1>工具目录</h1>
+        <span class="st-badge">6</span>
+      </div>
     </div>
 
     <ul class="nav-list" id="navList">
-      <li class="nav-item wire active" data-url="https://abspresales.github.io/wire-cable/" data-name="标准线材速查">
+      <li class="nav-item wire" data-url="https://abspresales.github.io/wire-cable/" data-name="标准线材速查">
         <div class="nav-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
             <path d="M4 4v6a4 4 0 0 0 4 4h8a4 4 0 0 0 4-4V4"/>
@@ -519,9 +750,6 @@
       </li>
     </ul>
 
-    <div class="sidebar-footer">
-      成功是基于达成目标<br>速度和效率是制胜的关键
-    </div>
   </aside>
 
   <!-- ===== 右侧主区域 ===== -->
@@ -529,26 +757,46 @@
     <div class="main-header">
       <div class="main-title">
         <span class="status-dot"></span>
-        <span id="currentToolName">标准线材速查</span>
+        <span id="currentToolName">工具中心</span>
       </div>
       <div class="main-actions">
-        <button class="action-btn" id="refreshBtn" title="刷新当前工具">
+        <button class="action-btn" id="homeBtn" title="返回首页">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          首页
+        </button>
+        <button class="action-btn" id="refreshBtn" title="刷新当前工具" style="display:none;">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
           刷新
         </button>
-        <a class="action-btn" id="openNewTab" href="https://abspresales.github.io/wire-cable/" target="_blank" rel="noopener noreferrer" title="在新标签页打开">
+        <a class="action-btn" id="openNewTab" href="#" target="_blank" rel="noopener noreferrer" title="在新标签页打开" style="display:none;">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
           新窗口打开
         </a>
       </div>
     </div>
 
-    <div class="iframe-container">
-      <div class="loading-overlay" id="loadingOverlay">
-        <div class="spinner"></div>
-        <div class="loading-text">正在加载工具...</div>
+    <div class="content-area">
+      <!-- 欢迎首页 -->
+      <div class="welcome-page" id="welcomePage">
+        <div class="welcome-hero">
+          <div class="badge"><span class="dot"></span>Pre-Sales Toolkit</div>
+          <h2>LED 售前<span class="gradient">工具中心</span></h2>
+          <p>标准线材 · 预估尺寸 · 结构配件 · 常用配件 · 非标方案 · 布线图纸<br>点击左侧导航开始使用</p>
+        </div>
+
+        <div class="welcome-footer">
+          成功是基于达成目标，速度和效率是制胜的关键
+        </div>
       </div>
-      <iframe id="toolFrame" src="https://abspresales.github.io/wire-cable/" title="LED售前工具"></iframe>
+
+      <!-- iframe 工具区域 -->
+      <div class="iframe-container hidden" id="iframeContainer">
+        <div class="loading-overlay" id="loadingOverlay">
+          <div class="spinner"></div>
+          <div class="loading-text">正在加载工具...</div>
+        </div>
+        <iframe id="toolFrame" src="" title="LED售前工具"></iframe>
+      </div>
     </div>
   </main>
 
@@ -558,30 +806,50 @@
   (function() {
     const navItems = document.querySelectorAll('.nav-item');
     const iframe = document.getElementById('toolFrame');
+    const iframeContainer = document.getElementById('iframeContainer');
+    const welcomePage = document.getElementById('welcomePage');
     const loadingOverlay = document.getElementById('loadingOverlay');
     const currentToolName = document.getElementById('currentToolName');
     const openNewTab = document.getElementById('openNewTab');
     const refreshBtn = document.getElementById('refreshBtn');
-    let currentUrl = 'https://abspresales.github.io/wire-cable/';
+    const homeBtn = document.getElementById('homeBtn');
+    let currentUrl = '';
 
-    function switchTool(url, name) {
+    function showTool(url, name) {
       currentUrl = url;
       currentToolName.textContent = name;
       openNewTab.href = url;
+      welcomePage.classList.add('hidden');
+      iframeContainer.classList.remove('hidden');
+      refreshBtn.style.display = 'inline-flex';
+      openNewTab.style.display = 'inline-flex';
       loadingOverlay.classList.remove('hidden');
       iframe.src = url;
+    }
+
+    function showHome() {
+      navItems.forEach(function(i) { i.classList.remove('active'); });
+      currentToolName.textContent = '工具中心';
+      welcomePage.classList.remove('hidden');
+      iframeContainer.classList.add('hidden');
+      refreshBtn.style.display = 'none';
+      openNewTab.style.display = 'none';
+      iframe.src = '';
+      currentUrl = '';
     }
 
     navItems.forEach(function(item) {
       item.addEventListener('click', function() {
         navItems.forEach(function(i) { i.classList.remove('active'); });
         item.classList.add('active');
-        switchTool(item.dataset.url, item.dataset.name);
+        showTool(item.dataset.url, item.dataset.name);
       });
     });
 
+    homeBtn.addEventListener('click', showHome);
+
     iframe.addEventListener('load', function() {
-      loadingOverlay.classList.add('hidden');
+      if (iframe.src) loadingOverlay.classList.add('hidden');
     });
 
     // 5秒后强制隐藏加载遮罩
@@ -590,6 +858,7 @@
     }, 5000);
 
     refreshBtn.addEventListener('click', function() {
+      if (!currentUrl) return;
       loadingOverlay.classList.remove('hidden');
       iframe.src = currentUrl;
       setTimeout(function() { loadingOverlay.classList.add('hidden'); }, 3000);

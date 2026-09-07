@@ -57,94 +57,80 @@
     overflow-x: hidden;
   }
 
-  .sidebar-header {
-    height: 52px;
-    padding: 0 16px;
+  /* 品牌区 */
+  .sidebar-brand {
+    padding: 22px 16px 18px;
+    text-align: center;
     border-bottom: 1px solid var(--border-subtle);
-    display: flex;
-    align-items: center;
-    justify-content: center;
     flex-shrink: 0;
-    background: linear-gradient(180deg, rgba(56, 189, 248, 0.04), transparent);
   }
 
-  .sidebar-title {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    padding: 6px 14px 6px 8px;
-    border-radius: 10px;
-    background: var(--bg-card);
-    border: 1px solid var(--border-subtle);
-  }
-
-  .sidebar-title .st-icon {
-    width: 26px;
-    height: 26px;
-    border-radius: 7px;
+  .brand-logo {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
     background: linear-gradient(135deg, var(--accent-size), var(--accent-wiring));
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
+    margin: 0 auto 12px;
+    box-shadow: 0 4px 14px rgba(56, 189, 248, 0.25);
   }
 
-  .sidebar-title .st-icon svg {
-    width: 14px;
-    height: 14px;
+  .brand-logo svg {
+    width: 22px;
+    height: 22px;
     stroke: #fff;
   }
 
-  .sidebar-title h1 {
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    line-height: 1;
+  .brand-title {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
     color: var(--text-primary);
+    margin-bottom: 4px;
   }
 
-  .sidebar-title .st-badge {
+  .brand-subtitle {
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  /* 目录标签 */
+  .nav-section {
+    padding: 14px 16px 8px;
+    flex-shrink: 0;
+  }
+
+  .nav-section-label {
     font-size: 10px;
     font-weight: 600;
-    color: var(--accent-size);
-    background: rgba(56, 189, 248, 0.1);
-    padding: 2px 6px;
-    border-radius: 5px;
-    margin-left: 2px;
-  }
-
-  .sidebar-header .logo-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--accent-size);
-    box-shadow: 0 0 10px var(--accent-size);
-    display: inline-block;
-    margin-right: 8px;
-    animation: pulse 2.4s ease-in-out infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.35; }
-  }
-
-  .sidebar-header .brand {
-    font-size: 11px;
-    font-weight: 500;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--text-muted);
-    margin-bottom: 10px;
     display: flex;
     align-items: center;
+    gap: 8px;
+  }
+
+  .nav-section-label::before {
+    content: '';
+    width: 3px;
+    height: 12px;
+    border-radius: 2px;
+    background: linear-gradient(180deg, var(--accent-size), var(--accent-wiring));
   }
 
   /* 导航列表 */
   .nav-list {
     list-style: none;
-    padding: 10px 10px;
+    padding: 0 10px 10px;
     flex: 1;
+    display: flex;
+    flex-direction: column;
   }
 
   .nav-item {
@@ -155,7 +141,7 @@
     border-radius: 10px;
     cursor: pointer;
     transition: all 0.2s ease;
-    margin-bottom: 3px;
+    margin-bottom: 2px;
     border: 1px solid transparent;
     position: relative;
   }
@@ -167,25 +153,25 @@
 
   .nav-item.active {
     background: var(--bg-active);
-    border-color: rgba(56, 189, 248, 0.25);
+    border-color: rgba(56, 189, 248, 0.2);
   }
 
   .nav-item.active::before {
     content: '';
     position: absolute;
-    left: -12px;
+    left: -10px;
     top: 50%;
     transform: translateY(-50%);
     width: 3px;
-    height: 60%;
+    height: 55%;
     border-radius: 0 3px 3px 0;
-    background: var(--accent-size);
+    background: linear-gradient(180deg, var(--accent-size), var(--accent-wiring));
   }
 
   .nav-icon {
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -193,8 +179,8 @@
   }
 
   .nav-icon svg {
-    width: 16px;
-    height: 16px;
+    width: 17px;
+    height: 17px;
   }
 
   .nav-item.wire .nav-icon { background: rgba(245, 158, 11, 0.12); }
@@ -236,14 +222,35 @@
 
   .nav-item.active .nav-name { color: var(--accent-size); }
 
-  /* 边栏底部 */
-  .sidebar-footer {
-    padding: 16px 20px;
-    border-top: 1px solid var(--border-subtle);
-    font-size: 11px;
+  /* 底部统计卡 */
+  .sidebar-stats {
+    margin: 0 10px 12px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    flex-shrink: 0;
+  }
+
+  .stats-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+
+  .stats-row:last-child { margin-bottom: 0; }
+
+  .stats-label {
+    font-size: 10px;
     color: var(--text-muted);
-    font-weight: 300;
-    line-height: 1.6;
+    font-weight: 400;
+  }
+
+  .stats-value {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent-size);
   }
 
   /* ===== 右侧主区域 ===== */
@@ -550,15 +557,37 @@
       border-bottom: 1px solid var(--border-subtle);
     }
 
-    .sidebar-header {
-      height: 48px;
-      padding: 0 16px;
+    .sidebar-brand {
+      padding: 14px 16px 12px;
+    }
+
+    .brand-logo {
+      width: 34px;
+      height: 34px;
+      margin-bottom: 8px;
+    }
+
+    .brand-logo svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .brand-title {
+      font-size: 13px;
+    }
+
+    .nav-section {
+      display: none;
+    }
+
+    .sidebar-stats {
+      display: none;
     }
 
     .nav-list {
       display: flex;
       gap: 8px;
-      padding: 10px 12px;
+      padding: 0 12px 12px;
       overflow-x: auto;
       overflow-y: hidden;
     }
@@ -592,10 +621,6 @@
 
     .nav-name {
       font-size: 12px;
-    }
-
-    .sidebar-footer {
-      display: none;
     }
 
     .main-header {
@@ -641,21 +666,22 @@
 
   <!-- ===== 左侧边栏 ===== -->
   <aside class="sidebar">
-    <div class="sidebar-header">
-      <div class="sidebar-title">
-        <div class="st-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="8" y1="6" x2="21" y2="6"/>
-            <line x1="8" y1="12" x2="21" y2="12"/>
-            <line x1="8" y1="18" x2="21" y2="18"/>
-            <line x1="3" y1="6" x2="3.01" y2="6"/>
-            <line x1="3" y1="12" x2="3.01" y2="12"/>
-            <line x1="3" y1="18" x2="3.01" y2="18"/>
-          </svg>
-        </div>
-        <h1>工具目录</h1>
-        <span class="st-badge">6</span>
+    <div class="sidebar-brand">
+      <div class="brand-logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="3" width="20" height="14" rx="2"/>
+          <line x1="8" y1="21" x2="16" y2="21"/>
+          <line x1="12" y1="17" x2="12" y2="21"/>
+          <line x1="6" y1="8" x2="10" y2="8"/>
+          <line x1="6" y1="11" x2="14" y2="11"/>
+        </svg>
       </div>
+      <div class="brand-title">售前工具</div>
+      <div class="brand-subtitle">Pre-Sales Toolkit</div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-label">工具目录</div>
     </div>
 
     <ul class="nav-list" id="navList">
@@ -750,6 +776,12 @@
       </li>
     </ul>
 
+    <div class="sidebar-stats">
+      <div class="stats-row">
+        <span class="stats-label">工具总数</span>
+        <span class="stats-value">6 个</span>
+      </div>
+    </div>
   </aside>
 
   <!-- ===== 右侧主区域 ===== -->

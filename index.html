@@ -552,6 +552,14 @@
         <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
         刷新
       </button>
+      <button class="action-btn" id="historyBtn" title="更新履历" style="display:none;">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M3 17l5-5 3 3 6-6 3 3a9 9 0 0 1-12 6z" opacity="0"/><path d="M12 8v4l3 2"/><circle cx="12" cy="12" r="9"/><polyline points="12 8 12 12 15 15"/></svg>
+        更新履历
+      </button>
+      <button class="action-btn" id="adminBtn" title="后台维护" style="display:none;">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        后台维护
+      </button>
       <button class="action-btn" id="homeBtn" title="返回首页">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
         首页
@@ -686,6 +694,8 @@
     const loadingOverlay = document.getElementById('loadingOverlay');
     const refreshBtn = document.getElementById('refreshBtn');
     const homeBtn = document.getElementById('homeBtn');
+    const historyBtn = document.getElementById('historyBtn');
+    const adminBtn = document.getElementById('adminBtn');
     /* 顶部抬头当前站名 */
     const brandNow = document.getElementById('brandNow');
     const brandNowTitle = document.getElementById('brandNowTitle');
@@ -731,6 +741,8 @@
       welcomePage.classList.add('hidden');
       iframeContainer.classList.remove('hidden');
       refreshBtn.style.display = 'inline-flex';
+      historyBtn.style.display = 'inline-flex';
+      adminBtn.style.display = 'inline-flex';
       loadingOverlay.classList.remove('hidden');
       iframe.src = url;
       // 顶部抬头：进入子站显示「｜ 站名」
@@ -742,6 +754,8 @@
       welcomePage.classList.remove('hidden');
       iframeContainer.classList.add('hidden');
       refreshBtn.style.display = 'none';
+      historyBtn.style.display = 'none';
+      adminBtn.style.display = 'none';
       iframe.src = '';
       currentUrl = '';
       // 顶部抬头：回主页只留 Absen logo，隐藏标题
@@ -781,6 +795,14 @@
       iframe.src = currentUrl;
       setTimeout(function() { loadingOverlay.classList.add('hidden'); }, 3000);
     });
+
+    // 更新履历：委托给 iframe 内子站打开（各站弹窗函数/数据不同，由子站自己响应）
+    function openChildModal(modal) {
+      if (!iframe.src) return;
+      try { iframe.contentWindow.postMessage({ type: 'presales-open-modal', modal: modal }, '*'); } catch (e) {}
+    }
+    if (historyBtn) historyBtn.addEventListener('click', function() { openChildModal('history'); });
+    if (adminBtn) adminBtn.addEventListener('click', function() { openChildModal('admin'); });
   })();
 </script>
 

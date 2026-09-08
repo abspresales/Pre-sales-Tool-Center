@@ -3,21 +3,35 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LED 售前工具中心</title>
+<title>售前工具中心</title>
 <link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap">
 <style>
   /* ===== 基础重置 ===== */
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-  :root {
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: var(--scrollbar);
+    border-radius: 8px;
+  }
+  ::-webkit-scrollbar-thumb:hover { background: var(--border-hover); }
+
+  body {
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar) transparent;
+  }
+
+  :root, :root[data-theme="dark"] {
+    color-scheme: dark;
     --bg-deep: #0F172A;
     --bg-sidebar: #131C31;
     --bg-card: #1E293B;
     --bg-card-hover: #273449;
     --bg-active: rgba(56, 189, 248, 0.12);
     --text-primary: #F1F5F9;
-    --text-secondary: #94A3B8;
-    --text-muted: #64748B;
+    --text-secondary: #A9B6C9;
+    --text-muted: #7C8AA0;
     --border-subtle: #334155;
     --border-hover: #475569;
     --accent-wire: #F59E0B;
@@ -26,283 +40,106 @@
     --accent-acc: #A78BFA;
     --accent-nonstd: #F472B6;
     --accent-wiring: #2DD4BF;
-    --sidebar-width: 200px;
+    --sidebar-width: 216px;
+    --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.28);
+    --scrollbar: #334155;
+  }
+
+  :root[data-theme="light"] {
+    color-scheme: light;
+    --bg-deep: #EFF4FB;
+    --bg-sidebar: #FFFFFF;
+    --bg-card: #FFFFFF;
+    --bg-card-hover: #F3F7FC;
+    --bg-active: rgba(14, 165, 233, 0.10);
+    --text-primary: #12263F;
+    --text-secondary: #3E4E64;
+    --text-muted: #6E7E93;
+    --border-subtle: #E3EAF3;
+    --border-hover: #CBD8E8;
+    --accent-wire: #D97706;
+    --accent-size: #0EA5E9;
+    --accent-struct: #10B981;
+    --accent-acc: #7C5CE0;
+    --accent-nonstd: #DB2777;
+    --accent-wiring: #0DA7A0;
+    --sidebar-width: 216px;
+    --shadow-card: 0 4px 18px rgba(15, 23, 42, 0.06);
+    --scrollbar: #CBD8E8;
   }
 
   html, body {
     height: 100%;
-    font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     background: var(--bg-deep);
     color: var(--text-primary);
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    -webkit-text-size-adjust: 100%;
+    font-synthesis-weight: none;
     overflow: hidden;
   }
 
   /* ===== 整体布局 ===== */
   .app {
     display: flex;
+    flex-direction: column;
     height: 100vh;
     width: 100%;
   }
 
-  /* ===== 左侧边栏 ===== */
-  .sidebar {
-    width: var(--sidebar-width);
-    min-width: var(--sidebar-width);
-    background: var(--bg-sidebar);
-    border-right: 1px solid var(--border-subtle);
+  /* ===== 顶部品牌栏 ===== */
+  .top-bar {
+    height: 56px;
+    padding: 0 20px;
+    border-bottom: 1px solid var(--border-subtle);
     display: flex;
-    flex-direction: column;
-    overflow-y: auto;
-    overflow-x: hidden;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    background: color-mix(in srgb, var(--bg-sidebar) 82%, transparent);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    flex-shrink: 0;
+    position: relative;
+    z-index: 20;
   }
 
-  /* 品牌区 */
-  .sidebar-brand {
-    padding: 22px 16px 18px;
-    text-align: center;
-    border-bottom: 1px solid var(--border-subtle);
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
     flex-shrink: 0;
   }
 
   .brand-logo {
-    width: 42px;
-    height: 42px;
-    border-radius: 12px;
-    background: linear-gradient(135deg, var(--accent-size), var(--accent-wiring));
     display: flex;
     align-items: center;
-    justify-content: center;
-    margin: 0 auto 12px;
-    box-shadow: 0 4px 14px rgba(56, 189, 248, 0.25);
+    flex-shrink: 0;
   }
 
   .brand-logo svg {
-    width: 22px;
-    height: 22px;
-    stroke: #fff;
-  }
-
-  .brand-title {
-    font-size: 15px;
-    font-weight: 700;
-    letter-spacing: 0.02em;
+    width: 96px;
+    height: 32px;
+    display: block;
+    /* 字标颜色随主题：浅色深字、深色白字；橙环固定 brand 橙 */
     color: var(--text-primary);
-    margin-bottom: 4px;
   }
 
-  .brand-subtitle {
-    font-size: 10px;
-    font-weight: 400;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-  }
-
-  /* 目录标签 */
-  .nav-section {
-    padding: 14px 16px 8px;
-    flex-shrink: 0;
-  }
-
-  .nav-section-label {
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .nav-section-label::before {
-    content: '';
-    width: 3px;
-    height: 12px;
-    border-radius: 2px;
-    background: linear-gradient(180deg, var(--accent-size), var(--accent-wiring));
-  }
-
-  /* 导航列表 */
-  .nav-list {
-    list-style: none;
-    padding: 0 10px 10px;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .nav-item {
+  .top-actions {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 10px 12px;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    margin-bottom: 2px;
-    border: 1px solid transparent;
-    position: relative;
   }
 
-  .nav-item:hover {
-    background: var(--bg-card);
-    border-color: var(--border-subtle);
-  }
-
-  .nav-item.active {
-    background: var(--bg-active);
-    border-color: rgba(56, 189, 248, 0.2);
-  }
-
-  .nav-item.active::before {
-    content: '';
-    position: absolute;
-    left: -10px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 3px;
-    height: 55%;
-    border-radius: 0 3px 3px 0;
-    background: linear-gradient(180deg, var(--accent-size), var(--accent-wiring));
-  }
-
-  .nav-icon {
-    width: 34px;
-    height: 34px;
-    border-radius: 9px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-
-  .nav-icon svg {
-    width: 17px;
-    height: 17px;
-  }
-
-  .nav-item.wire .nav-icon { background: rgba(245, 158, 11, 0.12); }
-  .nav-item.wire .nav-icon svg { stroke: var(--accent-wire); }
-  .nav-item.size .nav-icon { background: rgba(56, 189, 248, 0.12); }
-  .nav-item.size .nav-icon svg { stroke: var(--accent-size); }
-  .nav-item.struct .nav-icon { background: rgba(52, 211, 153, 0.12); }
-  .nav-item.struct .nav-icon svg { stroke: var(--accent-struct); }
-  .nav-item.acc .nav-icon { background: rgba(167, 139, 250, 0.12); }
-  .nav-item.acc .nav-icon svg { stroke: var(--accent-acc); }
-  .nav-item.nonstd .nav-icon { background: rgba(244, 114, 182, 0.12); }
-  .nav-item.nonstd .nav-icon svg { stroke: var(--accent-nonstd); }
-  .nav-item.wiring .nav-icon { background: rgba(45, 212, 191, 0.12); }
-  .nav-item.wiring .nav-icon svg { stroke: var(--accent-wiring); }
-
-  .nav-info {
-    flex: 1;
-    min-width: 0;
-  }
-
-  .nav-name {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-primary);
-    margin-bottom: 2px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .nav-desc {
-    font-size: 10px;
-    color: var(--text-muted);
-    font-weight: 300;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .nav-item.active .nav-name { color: var(--accent-size); }
-
-  /* 底部统计卡 */
-  .sidebar-stats {
-    margin: 0 10px 12px;
-    padding: 12px 14px;
-    border-radius: 10px;
-    background: var(--bg-card);
-    border: 1px solid var(--border-subtle);
-    flex-shrink: 0;
-  }
-
-  .stats-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 6px;
-  }
-
-  .stats-row:last-child { margin-bottom: 0; }
-
-  .stats-label {
-    font-size: 10px;
-    color: var(--text-muted);
-    font-weight: 400;
-  }
-
-  .stats-value {
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--accent-size);
-  }
-
-  /* ===== 右侧主区域 ===== */
+  /* ===== 主区域 ===== */
   .main {
     flex: 1;
     display: flex;
     flex-direction: column;
     min-width: 0;
     background: var(--bg-deep);
-  }
-
-  .main-header {
-    height: 48px;
-    padding: 0 24px;
-    border-bottom: 1px solid var(--border-subtle);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: var(--bg-sidebar);
-    flex-shrink: 0;
-  }
-
-  .main-title {
-    font-size: 14px;
-    font-weight: 600;
-    letter-spacing: 0.03em;
-    font-family: inherit;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    line-height: 1;
-  }
-
-  .main-title #currentToolName {
-    font-family: inherit;
-    font-size: inherit;
-    font-weight: inherit;
-    letter-spacing: inherit;
-  }
-
-  .main-title .status-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: var(--accent-struct);
-    box-shadow: 0 0 6px var(--accent-struct);
-  }
-
-  .main-actions {
-    display: flex;
-    align-items: center;
-    gap: 10px;
   }
 
   .action-btn {
@@ -332,6 +169,36 @@
     width: 14px;
     height: 14px;
     stroke: currentColor;
+  }
+
+  /* 主题切换（顶部按钮） */
+  .theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 12px;
+    border-radius: 8px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  .theme-toggle:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--border-hover);
+    color: var(--text-primary);
+  }
+
+  .theme-toggle svg {
+    width: 15px;
+    height: 15px;
+    stroke: var(--accent-size);
   }
 
   /* 内容区域 */
@@ -370,11 +237,11 @@
     gap: 8px;
     padding: 6px 16px;
     border-radius: 20px;
-    background: rgba(56, 189, 248, 0.1);
-    border: 1px solid rgba(56, 189, 248, 0.2);
+    background: rgba(231, 129, 49, 0.1);
+    border: 1px solid rgba(231, 129, 49, 0.22);
     font-size: 12px;
     font-weight: 500;
-    color: var(--accent-size);
+    color: #E78131;
     margin-bottom: 20px;
     letter-spacing: 0.05em;
   }
@@ -383,33 +250,31 @@
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: var(--accent-size);
-    box-shadow: 0 0 8px var(--accent-size);
+    background: #E78131;
+    box-shadow: 0 0 8px rgba(231, 129, 49, 0.8);
     animation: pulse 2s ease-in-out infinite;
   }
 
   .welcome-hero h2 {
     font-size: clamp(28px, 4vw, 42px);
-    font-weight: 900;
-    letter-spacing: -0.02em;
+    font-weight: 800;
+    letter-spacing: -0.01em;
     line-height: 1.2;
     margin-bottom: 14px;
   }
 
   .welcome-hero h2 .gradient {
-    background: linear-gradient(135deg, var(--accent-size), var(--accent-wiring));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #E78131;
   }
 
   .welcome-hero p {
     font-size: 15px;
     color: var(--text-secondary);
-    font-weight: 300;
+    font-weight: 400;
     line-height: 1.7;
     max-width: 520px;
     margin: 0 auto;
+    letter-spacing: 0.01em;
   }
 
   .welcome-grid {
@@ -428,12 +293,56 @@
     cursor: pointer;
     transition: all 0.25s ease;
     text-align: left;
+    position: relative;
+    overflow: hidden;
   }
+
+  .welcome-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background: radial-gradient(140px 90px at var(--mx, 50%) var(--my, 50%), rgba(56, 189, 248, 0.12), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .welcome-card:hover::after { opacity: 1; }
 
   .welcome-card:hover {
     background: var(--bg-card-hover);
     border-color: var(--border-hover);
-    transform: translateY(-2px);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-card), 0 10px 26px rgba(56, 189, 248, 0.10);
+  }
+
+  .welcome-card .wc-go {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-active);
+    color: var(--accent-size);
+    opacity: 0;
+    transition: all 0.25s ease;
+  }
+
+  .welcome-card .wc-go svg {
+    width: 13px;
+    height: 13px;
+    stroke: currentColor;
+  }
+
+  .welcome-card:hover .wc-go {
+    opacity: 1;
+    right: 12px;
   }
 
   .welcome-card .wc-icon {
@@ -454,14 +363,15 @@
   .welcome-card h3 {
     font-size: 15px;
     font-weight: 700;
+    letter-spacing: 0.01em;
     margin-bottom: 6px;
   }
 
   .welcome-card p {
     font-size: 12px;
     color: var(--text-muted);
-    font-weight: 300;
-    line-height: 1.5;
+    font-weight: 400;
+    line-height: 1.55;
   }
 
   .welcome-card.wire .wc-icon { background: rgba(245, 158, 11, 0.12); }
@@ -481,7 +391,8 @@
     margin-top: 36px;
     font-size: 12px;
     color: var(--text-muted);
-    font-weight: 300;
+    font-weight: 400;
+    letter-spacing: 0.02em;
     text-align: center;
     line-height: 1.8;
   }
@@ -490,7 +401,7 @@
   .iframe-container {
     position: absolute;
     inset: 0;
-    background: #fff;
+    background: var(--bg-deep);
     overflow: hidden;
   }
 
@@ -549,87 +460,18 @@
       flex-direction: column;
     }
 
-    .sidebar {
-      width: 100%;
-      min-width: 100%;
-      max-height: 50vh;
-      border-right: none;
-      border-bottom: 1px solid var(--border-subtle);
-    }
-
-    .sidebar-brand {
-      padding: 14px 16px 12px;
-    }
-
-    .brand-logo {
-      width: 34px;
-      height: 34px;
-      margin-bottom: 8px;
+    .top-bar {
+      height: 52px;
+      padding: 0 14px;
     }
 
     .brand-logo svg {
-      width: 18px;
-      height: 18px;
+      width: 84px;
+      height: 28px;
     }
 
-    .brand-title {
-      font-size: 13px;
-    }
-
-    .nav-section {
+    .theme-toggle .tt-label {
       display: none;
-    }
-
-    .sidebar-stats {
-      display: none;
-    }
-
-    .nav-list {
-      display: flex;
-      gap: 8px;
-      padding: 0 12px 12px;
-      overflow-x: auto;
-      overflow-y: hidden;
-    }
-
-    .nav-item {
-      flex-shrink: 0;
-      flex-direction: column;
-      gap: 6px;
-      padding: 10px 14px;
-      margin-bottom: 0;
-      min-width: 90px;
-      text-align: center;
-    }
-
-    .nav-item.active::before {
-      display: none;
-    }
-
-    .nav-icon {
-      width: 32px;
-      height: 32px;
-    }
-
-    .nav-info {
-      text-align: center;
-    }
-
-    .nav-desc {
-      display: none;
-    }
-
-    .nav-name {
-      font-size: 12px;
-    }
-
-    .main-header {
-      height: 48px;
-      padding: 0 16px;
-    }
-
-    .main-title {
-      font-size: 13px;
     }
 
     .welcome-page {
@@ -652,7 +494,7 @@
 
   /* ===== 减少动效 ===== */
   @media (prefers-reduced-motion: reduce) {
-    .nav-item, .action-btn, .loading-overlay {
+    .action-btn, .loading-overlay, .welcome-card {
       transition: none;
       animation: none;
     }
@@ -664,156 +506,136 @@
 
 <div class="app">
 
-  <!-- ===== 左侧边栏 ===== -->
-  <aside class="sidebar">
-    <div class="sidebar-brand">
+  <!-- ===== 顶部品牌栏 ===== -->
+  <header class="top-bar">
+    <div class="brand">
       <div class="brand-logo">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="2" y="3" width="20" height="14" rx="2"/>
-          <line x1="8" y1="21" x2="16" y2="21"/>
-          <line x1="12" y1="17" x2="12" y2="21"/>
-          <line x1="6" y1="8" x2="10" y2="8"/>
-          <line x1="6" y1="11" x2="14" y2="11"/>
+        <svg viewBox="0 0 116 38.24" xmlns="http://www.w3.org/2000/svg" aria-label="Absen">
+          <g transform="translate(-214.554 -381.569)">
+            <path d="M214.554,448.822c.188-.406.367-.8.548-1.184q2.564-5.5,5.128-11,2-4.3,4.01-8.594c.11-.235.221-.469.325-.706a.2.2,0,0,1,.213-.142q4.962.005,9.925,0c.125,0,.16.064.2.154q.884,1.9,1.771,3.8l4.976,10.672q1.595,3.421,3.187,6.843c.023.05.041.1.069.172H244.7q-3.441,0-6.883,0a.275.275,0,0,1-.3-.189c-.624-1.356-1.26-2.706-1.886-4.061a.242.242,0,0,0-.26-.16q-5.637,0-11.274,0a.264.264,0,0,0-.282.184c-.627,1.361-1.263,2.717-1.894,4.076a.2.2,0,0,1-.208.15q-3.536-.006-7.073,0C214.626,448.833,214.607,448.829,214.554,448.822Zm19.061-8.551-3.882-8.325-3.881,8.325Z" transform="translate(0 -38.395)" fill="currentColor"/>
+            <path d="M422.345,395.147v-.341q0-2.7,0-5.4c0-.5,0-.5.483-.59a10.622,10.622,0,0,1,3.926.013,10.938,10.938,0,0,1,8.843,9.7,10.96,10.96,0,0,1-1.421,6.425,10.863,10.863,0,0,1-8.416,5.411,10.744,10.744,0,0,1-6.432-1.41,11.294,11.294,0,0,1-1.962-1.451,11.006,11.006,0,0,1-1.636-1.908,10.746,10.746,0,0,1-1.025-1.894,9.136,9.136,0,0,1-.671-2.379,14.307,14.307,0,0,1-.149-1.734q-.033-8.841-.041-17.682a.482.482,0,0,1,.007-.188.381.381,0,0,1,.14-.138c.027-.018.074,0,.112,0h5.4c.277,0,.278,0,.278.267q0,8.157,0,16.315c0,.462,0,.924,0,1.386a4.775,4.775,0,0,0,1.609,3.666,4.985,4.985,0,1,0,5.015-8.381,4.975,4.975,0,0,0-3.47.052C422.75,394.948,422.572,395.043,422.345,395.147Z" transform="translate(-167.705)" fill="#dc5f00"/>
+            <path d="M574.934,427.211a4.764,4.764,0,0,0-1.361,1.528,4.559,4.559,0,0,0-.364,3.3,7.5,7.5,0,0,0,1.355,2.754,39.534,39.534,0,0,0,3.978,4.512c.917.91,1.83,1.828,2.678,2.8a12.582,12.582,0,0,1,2.715,4.866,8.63,8.63,0,0,1,.317,3.082,9.368,9.368,0,0,1-2.4,5.733,7.093,7.093,0,0,1-3.559,2.064,12.847,12.847,0,0,1-3.215.357q-4.078,0-8.157,0H566.7v-6.516h.233q3.945,0,7.891,0a2.64,2.64,0,0,0,2.578-1.768,2.561,2.561,0,0,0-.482-2.582c-.476-.6-.993-1.166-1.5-1.738q-1.395-1.569-2.8-3.127c-.719-.793-1.462-1.564-2.181-2.358a13.194,13.194,0,0,1-3.265-6.058,11.883,11.883,0,0,1-.218-3.528,14.6,14.6,0,0,1,.633-3.153c.035-.114.074-.181.216-.18q3.518.007,7.035,0C574.857,427.2,574.876,427.2,574.934,427.211Z" transform="translate(-296.345 -38.396)" fill="currentColor"/>
+            <path d="M706.867,433.455l-14.725,8.992a6.237,6.237,0,0,0,1.493,1.049,6.918,6.918,0,0,0,2.62.7,9.09,9.09,0,0,0,4.247-.793,20.216,20.216,0,0,0,2.787-1.46l.2-.12,2.109,4.331c-.365.218-.718.439-1.081.642a16.431,16.431,0,0,1-5.007,1.862,14.623,14.623,0,0,1-4.44.176,11.134,11.134,0,0,1-7.155-3.688,10.191,10.191,0,0,1-2.554-5.29,10.391,10.391,0,0,1,3.206-9.517,10.9,10.9,0,0,1,3.554-2.315,11.729,11.729,0,0,1,3.128-.726,13.143,13.143,0,0,1,3.088.049,10.845,10.845,0,0,1,5.184,2.136,12.589,12.589,0,0,1,3.3,3.876C706.838,433.386,706.849,433.416,706.867,433.455Zm-16.452,5.365,9.611-5.8a3.667,3.667,0,0,0-1-.815,5.3,5.3,0,0,0-3.01-.578,5.82,5.82,0,0,0-3.828,1.7A6.433,6.433,0,0,0,690.416,438.82Z" transform="translate(-396.07 -38.426)" fill="currentColor"/>
+            <path d="M842.37,448.9h-5.215V427.292h4.813v3.143l.071.048c.05-.069.1-.141.151-.205a7.843,7.843,0,0,1,1.921-1.651,6.041,6.041,0,0,1,2.562-.815,6.839,6.839,0,0,1,5.915,2.128,6.7,6.7,0,0,1,1.829,3.839c.037.409.071.821.071,1.231q.008,6.836,0,13.672v.22h-5.283v-.276q0-6.4-.006-12.8a7.825,7.825,0,0,0-.117-1.3,3.426,3.426,0,0,0-2.677-2.616,3.372,3.372,0,0,0-2.962.813,2.861,2.861,0,0,0-.97,1.958c-.058.789-.1,1.58-.1,2.371-.01,3.873,0,7.745,0,11.618Z" transform="translate(-523.938 -38.477)" fill="currentColor"/>
+          </g>
         </svg>
       </div>
-      <div class="brand-title">售前工具</div>
-      <div class="brand-subtitle">Pre-Sales Toolkit</div>
     </div>
-
-    <div class="nav-section">
-      <div class="nav-section-label">工具目录</div>
+    <div class="top-actions">
+      <a class="action-btn" id="openNewTab" href="#" target="_blank" rel="noopener noreferrer" title="在新标签页打开" style="display:none;">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        新窗口打开
+      </a>
+      <button class="action-btn" id="refreshBtn" title="刷新当前工具" style="display:none;">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+        刷新
+      </button>
+      <button class="action-btn" id="homeBtn" title="返回首页">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        首页
+      </button>
+      <button class="theme-toggle" id="themeToggle" title="切换主题：浅色 / 深色">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="5"/>
+          <line x1="12" y1="1" x2="12" y2="3"/>
+          <line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="1" y1="12" x2="3" y2="12"/>
+          <line x1="21" y1="12" x2="23" y2="12"/>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+        <span class="tt-label" id="themeLabel">深色</span>
+      </button>
     </div>
+  </header>
 
-    <ul class="nav-list" id="navList">
-      <li class="nav-item wire" data-url="https://abspresales.github.io/wire-cable/" data-name="标准线材速查">
-        <div class="nav-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M4 4v6a4 4 0 0 0 4 4h8a4 4 0 0 0 4-4V4"/>
-            <path d="M4 20v-2a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2"/>
-            <circle cx="8" cy="4" r="1.5"/>
-            <circle cx="16" cy="4" r="1.5"/>
-            <circle cx="8" cy="20" r="1.5"/>
-            <circle cx="16" cy="20" r="1.5"/>
-          </svg>
-        </div>
-        <div class="nav-info">
-          <div class="nav-name">标准线材速查</div>
-          <div class="nav-desc">线材规格 · SAP料号</div>
-        </div>
-      </li>
-
-      <li class="nav-item size" data-url="https://abspresales.github.io/estimated-dimensions/" data-name="预估尺寸速算">
-        <div class="nav-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="3" width="18" height="18" rx="2"/>
-            <path d="M3 9h18"/>
-            <path d="M9 3v18"/>
-            <path d="M15 3v18"/>
-            <path d="M3 15h18"/>
-          </svg>
-        </div>
-        <div class="nav-info">
-          <div class="nav-name">预估尺寸速算</div>
-          <div class="nav-desc">重量体积 · 货柜估算</div>
-        </div>
-      </li>
-
-      <li class="nav-item struct" data-url="https://abspresales.github.io/structural-sfittings/" data-name="结构配件速算">
-        <div class="nav-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-            <path d="M2 17l10 5 10-5"/>
-            <path d="M2 12l10 5 10-5"/>
-          </svg>
-        </div>
-        <div class="nav-info">
-          <div class="nav-name">结构配件速算</div>
-          <div class="nav-desc">挂架背条 · 包边支撑</div>
-        </div>
-      </li>
-
-      <li class="nav-item acc" data-url="https://abspresales.github.io/common-accessories/" data-name="常用配件速查">
-        <div class="nav-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
-          </svg>
-        </div>
-        <div class="nav-info">
-          <div class="nav-name">常用配件速查</div>
-          <div class="nav-desc">配件规格 · 料号定位</div>
-        </div>
-      </li>
-
-      <li class="nav-item nonstd" data-url="https://abspresales.github.io/Non-standard-Solution/" data-name="非标方案统计">
-        <div class="nav-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-          </svg>
-        </div>
-        <div class="nav-info">
-          <div class="nav-name">非标方案统计</div>
-          <div class="nav-desc">定制方案 · 特殊场景</div>
-        </div>
-      </li>
-
-      <li class="nav-item wiring" data-url="https://abspresales.github.io/wiring-diagram" data-name="布线图纸生成">
-        <div class="nav-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="3" width="7" height="7" rx="1"/>
-            <rect x="14" y="3" width="7" height="7" rx="1"/>
-            <rect x="3" y="14" width="7" height="7" rx="1"/>
-            <rect x="14" y="14" width="7" height="7" rx="1"/>
-            <path d="M10 6.5h4"/>
-            <path d="M6.5 10v4"/>
-            <path d="M17.5 10v4"/>
-            <path d="M10 17.5h4"/>
-          </svg>
-        </div>
-        <div class="nav-info">
-          <div class="nav-name">布线图纸生成</div>
-          <div class="nav-desc">网线级联 · 电源分布</div>
-        </div>
-      </li>
-    </ul>
-
-    <div class="sidebar-stats">
-      <div class="stats-row">
-        <span class="stats-label">工具总数</span>
-        <span class="stats-value">6 个</span>
-      </div>
-    </div>
-  </aside>
-
-  <!-- ===== 右侧主区域 ===== -->
+  <!-- ===== 主区域 ===== -->
   <main class="main">
-    <div class="main-header">
-      <div class="main-title">
-        <span class="status-dot"></span>
-        <span id="currentToolName">工具中心</span>
-      </div>
-      <div class="main-actions">
-        <button class="action-btn" id="homeBtn" title="返回首页">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-          首页
-        </button>
-        <button class="action-btn" id="refreshBtn" title="刷新当前工具" style="display:none;">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-          刷新
-        </button>
-        <a class="action-btn" id="openNewTab" href="#" target="_blank" rel="noopener noreferrer" title="在新标签页打开" style="display:none;">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-          新窗口打开
-        </a>
-      </div>
-    </div>
+
 
     <div class="content-area">
       <!-- 欢迎首页 -->
       <div class="welcome-page" id="welcomePage">
         <div class="welcome-hero">
           <div class="badge"><span class="dot"></span>Pre-Sales Toolkit</div>
-          <h2>LED 售前<span class="gradient">工具中心</span></h2>
-          <p>标准线材 · 预估尺寸 · 结构配件 · 常用配件 · 非标方案 · 布线图纸<br>点击左侧导航开始使用</p>
+          <h2>售前<span class="gradient">工具中心</span></h2>
+          <p>六大核心工具一站式汇聚<br>点选任意卡片即可开始使用</p>
+        </div>
+
+        <div class="welcome-grid">
+          <div class="welcome-card wire" data-url="https://abspresales.github.io/wire-cable/" data-name="标准线材速查">
+            <div class="wc-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4v6a4 4 0 0 0 4 4h8a4 4 0 0 0 4-4V4"/>
+                <path d="M4 20v-2a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2"/>
+                <circle cx="8" cy="4" r="1.5"/><circle cx="16" cy="4" r="1.5"/>
+                <circle cx="8" cy="20" r="1.5"/><circle cx="16" cy="20" r="1.5"/>
+              </svg>
+            </div>
+            <h3>标准线材速查</h3>
+            <p>线材规格 · SAP料号</p>
+            <span class="wc-go"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+          </div>
+
+          <div class="welcome-card size" data-url="https://abspresales.github.io/estimated-dimensions/" data-name="预估尺寸速算">
+            <div class="wc-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                <path d="M3 9h18"/><path d="M9 3v18"/><path d="M15 3v18"/><path d="M3 15h18"/>
+              </svg>
+            </div>
+            <h3>预估尺寸速算</h3>
+            <p>重量体积 · 货柜估算</p>
+            <span class="wc-go"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+          </div>
+
+          <div class="welcome-card struct" data-url="https://abspresales.github.io/structural-sfittings/" data-name="结构配件速算">
+            <div class="wc-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+              </svg>
+            </div>
+            <h3>结构配件速算</h3>
+            <p>挂架背条 · 包边支撑</p>
+            <span class="wc-go"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+          </div>
+
+          <div class="welcome-card acc" data-url="https://abspresales.github.io/common-accessories/" data-name="常用配件速查">
+            <div class="wc-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+              </svg>
+            </div>
+            <h3>常用配件速查</h3>
+            <p>配件规格 · 料号定位</p>
+            <span class="wc-go"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+          </div>
+
+          <div class="welcome-card nonstd" data-url="https://abspresales.github.io/Non-standard-Solution/" data-name="非标方案统计">
+            <div class="wc-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+              </svg>
+            </div>
+            <h3>非标方案统计</h3>
+            <p>定制方案 · 特殊场景</p>
+            <span class="wc-go"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+          </div>
+
+          <div class="welcome-card wiring" data-url="https://abspresales.github.io/wiring-diagram" data-name="布线图纸生成">
+            <div class="wc-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+                <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+                <path d="M10 6.5h4"/><path d="M6.5 10v4"/><path d="M17.5 10v4"/><path d="M10 17.5h4"/>
+              </svg>
+            </div>
+            <h3>布线图纸生成</h3>
+            <p>网线级联 · 电源分布</p>
+            <span class="wc-go"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+          </div>
         </div>
 
         <div class="welcome-footer">
@@ -836,20 +658,45 @@
 
 <script>
   (function() {
-    const navItems = document.querySelectorAll('.nav-item');
     const iframe = document.getElementById('toolFrame');
     const iframeContainer = document.getElementById('iframeContainer');
     const welcomePage = document.getElementById('welcomePage');
     const loadingOverlay = document.getElementById('loadingOverlay');
-    const currentToolName = document.getElementById('currentToolName');
     const openNewTab = document.getElementById('openNewTab');
     const refreshBtn = document.getElementById('refreshBtn');
     const homeBtn = document.getElementById('homeBtn');
+    /* 主题切换相关 */
+    const themeToggle = document.getElementById('themeToggle');
+    const themeLabel = document.getElementById('themeLabel');
     let currentUrl = '';
 
+    // ===== 主题切换（仅浅色 / 深色两态）=====
+    const THEME_KEY = 'pstc-theme';
+    const THEME_ORDER = ['light', 'dark'];
+    const THEME_LABEL = { light: '浅色', dark: '深色' };
+
+    function applyTheme() {
+      let pref = localStorage.getItem(THEME_KEY) || 'light';
+      if (THEME_ORDER.indexOf(pref) === -1) pref = 'light';
+      const resolved = pref;
+      document.documentElement.setAttribute('data-theme', resolved);
+      if (themeLabel) themeLabel.textContent = THEME_LABEL[pref];
+    }
+
+    function cycleTheme() {
+      const current = localStorage.getItem(THEME_KEY) || 'light';
+      const idx = THEME_ORDER.indexOf(current) === -1 ? 0 : THEME_ORDER.indexOf(current);
+      const next = THEME_ORDER[(idx + 1) % THEME_ORDER.length];
+      localStorage.setItem(THEME_KEY, next);
+      applyTheme();
+    }
+
+    if (themeToggle) themeToggle.addEventListener('click', cycleTheme);
+    applyTheme();
+
+    // ===== 工具切换 =====
     function showTool(url, name) {
       currentUrl = url;
-      currentToolName.textContent = name;
       openNewTab.href = url;
       welcomePage.classList.add('hidden');
       iframeContainer.classList.remove('hidden');
@@ -860,8 +707,6 @@
     }
 
     function showHome() {
-      navItems.forEach(function(i) { i.classList.remove('active'); });
-      currentToolName.textContent = '工具中心';
       welcomePage.classList.remove('hidden');
       iframeContainer.classList.add('hidden');
       refreshBtn.style.display = 'none';
@@ -870,11 +715,19 @@
       currentUrl = '';
     }
 
-    navItems.forEach(function(item) {
-      item.addEventListener('click', function() {
-        navItems.forEach(function(i) { i.classList.remove('active'); });
-        item.classList.add('active');
-        showTool(item.dataset.url, item.dataset.name);
+    // 欢迎页工具卡片点击
+    const welcomeCards = document.querySelectorAll('.welcome-card');
+    welcomeCards.forEach(function(card) {
+      card.addEventListener('click', function() {
+        showTool(card.dataset.url, card.dataset.name);
+      });
+      // 卡片鼠标光斑跟随
+      card.addEventListener('mousemove', function(e) {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        card.style.setProperty('--mx', x + 'px');
+        card.style.setProperty('--my', y + 'px');
       });
     });
 

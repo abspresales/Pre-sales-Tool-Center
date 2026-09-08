@@ -127,6 +127,28 @@
     color: var(--text-primary);
   }
 
+  /* 当前子站标题（主页时隐藏，进入子站显示「｜ 站名」） */
+  .brand-now {
+    display: none;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+  .brand-now.show { display: inline-flex; }
+  .brand-now-sep {
+    display: inline-block;
+    width: 1px;
+    align-self: stretch;
+    background: var(--border-subtle);
+  }
+  .brand-now-title {
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    color: var(--text-primary);
+    white-space: nowrap;
+  }
+
   .top-actions {
     display: flex;
     align-items: center;
@@ -520,12 +542,12 @@
           </g>
         </svg>
       </div>
+      <div class="brand-now" id="brandNow">
+        <span class="brand-now-sep"></span>
+        <span class="brand-now-title" id="brandNowTitle"></span>
+      </div>
     </div>
     <div class="top-actions">
-      <a class="action-btn" id="openNewTab" href="#" target="_blank" rel="noopener noreferrer" title="在新标签页打开" style="display:none;">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-        新窗口打开
-      </a>
       <button class="action-btn" id="refreshBtn" title="刷新当前工具" style="display:none;">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
         刷新
@@ -662,16 +684,18 @@
     const iframeContainer = document.getElementById('iframeContainer');
     const welcomePage = document.getElementById('welcomePage');
     const loadingOverlay = document.getElementById('loadingOverlay');
-    const openNewTab = document.getElementById('openNewTab');
     const refreshBtn = document.getElementById('refreshBtn');
     const homeBtn = document.getElementById('homeBtn');
+    /* 顶部抬头当前站名 */
+    const brandNow = document.getElementById('brandNow');
+    const brandNowTitle = document.getElementById('brandNowTitle');
     /* 主题切换相关 */
     const themeToggle = document.getElementById('themeToggle');
     const themeLabel = document.getElementById('themeLabel');
     let currentUrl = '';
 
-    // ===== 主题切换（仅浅色 / 深色两态）=====
-    const THEME_KEY = 'pstc-theme';
+    // ===== 主题切换（仅浅色 / 深色两态，统一键 presales-theme，同步所有子站）=====
+    const THEME_KEY = 'presales-theme';
     const THEME_ORDER = ['light', 'dark'];
     const THEME_LABEL = { light: '浅色', dark: '深色' };
 
@@ -683,12 +707,19 @@
       if (themeLabel) themeLabel.textContent = THEME_LABEL[pref];
     }
 
+    // 把当前主题广播给 iframe 内的子站（跨站统一控制）
+    function broadcastTheme() {
+      const t = localStorage.getItem(THEME_KEY) || 'light';
+      try { iframe.contentWindow.postMessage({ type: 'presales-theme', theme: t }, '*'); } catch (e) {}
+    }
+
     function cycleTheme() {
       const current = localStorage.getItem(THEME_KEY) || 'light';
       const idx = THEME_ORDER.indexOf(current) === -1 ? 0 : THEME_ORDER.indexOf(current);
       const next = THEME_ORDER[(idx + 1) % THEME_ORDER.length];
       localStorage.setItem(THEME_KEY, next);
       applyTheme();
+      broadcastTheme();
     }
 
     if (themeToggle) themeToggle.addEventListener('click', cycleTheme);
@@ -697,22 +728,24 @@
     // ===== 工具切换 =====
     function showTool(url, name) {
       currentUrl = url;
-      openNewTab.href = url;
       welcomePage.classList.add('hidden');
       iframeContainer.classList.remove('hidden');
       refreshBtn.style.display = 'inline-flex';
-      openNewTab.style.display = 'inline-flex';
       loadingOverlay.classList.remove('hidden');
       iframe.src = url;
+      // 顶部抬头：进入子站显示「｜ 站名」
+      if (brandNowTitle) brandNowTitle.textContent = name || '';
+      if (brandNow) brandNow.classList.add('show');
     }
 
     function showHome() {
       welcomePage.classList.remove('hidden');
       iframeContainer.classList.add('hidden');
       refreshBtn.style.display = 'none';
-      openNewTab.style.display = 'none';
       iframe.src = '';
       currentUrl = '';
+      // 顶部抬头：回主页只留 Absen logo，隐藏标题
+      if (brandNow) brandNow.classList.remove('show');
     }
 
     // 欢迎页工具卡片点击
@@ -734,7 +767,7 @@
     homeBtn.addEventListener('click', showHome);
 
     iframe.addEventListener('load', function() {
-      if (iframe.src) loadingOverlay.classList.add('hidden');
+      if (iframe.src) { loadingOverlay.classList.add('hidden'); broadcastTheme(); }
     });
 
     // 5秒后强制隐藏加载遮罩
